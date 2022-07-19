@@ -40,9 +40,9 @@ F_ERR="\e[0;31m"
 F_CMD="\033[1;36m"
 F_ARG="\033[1;32m"
 F_OPT="\033[1;32m"
-F_SCR="\033[1;36m\e[1m${SCRIPT_RUN}:${NS} "
+F_SCR="\033[1;36m\e[1m${SCRIPT_RUN}:${NS} ${ITL}"
 F_WAR="\033[0;33m\e[3m"
-F_SEP="$GREEN==============================================================$NS"
+F_SEP="$GREEN===============$NS"
 
 
 #-----------------------------------------------------------------------
@@ -96,9 +96,12 @@ Options:
 #  Global variables
 #-------------------------------------------------------------------------------
 
-files_list=()
+file_list=()
 video_list=()
 sub_list=()
+
+video_count=0
+subtitle_count=0
 
 
 #-------------------------------------------------------------------------------
@@ -138,10 +141,7 @@ shift $((OPTIND-1))
 #===============================================================================
 function get_files()
 {
-    local video_formats=( "mkv" "mp4" "avi" )
-    video_list=$(ls *.mkv)
-
-    
+    file_list=$(find -mindepth 1 -maxdepth 1)
 
 }  # ------------  end of function get_files  ------------
 
@@ -153,10 +153,76 @@ function get_files()
 #===============================================================================
 function get_video_files()
 {
+    local video_list_raw
+
+    for (( i=0; i<${#VIDEO_FORMATS[@]}; i++ )); do
+        # Get videos by extension from file_list
+        video_list_raw=$(grep "\.${VIDEO_FORMATS[i]}$" <<< "$file_list" || true)
+        if [[ -n $video_list_raw ]]; then
+            # Remove ./ from the files
+            video_list_raw=$(sed "s|\./||g" <<< $video_list_raw)
+            # Sort
+            video_list_raw=$(sort <<< "$video_list_raw")
+            # Convert into an array
+            mapfile -t video_list <<< "$video_list_raw"
+            break
+        fi
+    done
+
+    if [[ -z ${video_list[0]} ]]; then
+        echo "${F_ERR}${SCRIPT_RUN}: No video file found"
+        exit 255
+    fi
+
+}  # ------------  end of function get_video_files  ------------
+
+
+#===  FUNCTION  ================================================================
+#         NAME:   Get srt files
+#  DESCRIPTION:   Get srt files from file_list
+#===============================================================================
+function get_srt_files()
+{
+    local sub_list_raw
+
+    # Get srt files from file_list
+    sub_list_raw=$(grep "\.srt$" <<< "$file_list" || true)
+    # Remove ./ from files
+    sub_list_raw=$(sed "s|\./||g" <<< "$sub_list_raw")
+    # Sort
+    sub_list_raw=$(sort <<< "$sub_list_raw")
+
+    # Convert into an array
+    mapfile -t sub_list <<< "$sub_list_raw"
+
+    if [[ -z ${sub_list[0]} ]]; then
+        echo "${F_ERR}${SCRIPT_RUN}: No subtitle file found"
+        exit 255
+    fi
+
+
+
+}  # ------------  end of function get_srt_files  ------------
+
+
+
+#===  FUNCTION  ================================================================
+#         NAME:   Rename subtitles in current folder
+#  DESCRIPTION:   Renam subtitles in current folder based on video list
+#===============================================================================
+function rename_subtitles_in_current_folder()
+{
+    local name=""
+
+    for (( i=0; i<${#sub_list[@]}; i++ )); do
+        name=${video_list[i]%.*}
+        echo -e "            ${ITL}'${sub_list[i]}' to '${name}.srt'"
+    done
+
 
     
 
-}  # ------------  end of function get_video_files  ------------
+}  # ----------  end of function rename_subtitles_in_current_folder  ----------
 
 
 
@@ -165,10 +231,25 @@ function get_video_files()
 # Beginning of script work
 #===============================================================================
 
+echo -e "$BLD$SCRIPT_NAME v$SCRIPT_VERSION"
+echo -e "$F_SEP"
+
+#----------------------------------------
+
 get_files
 get_video_files
 get_srt_files
 
+video_count=${#video_list[@]}
+subtitle_count=${#sub_list[@]}
+
+if [[ $subtitle_count -gt $video_count ]]; then
+    echo "$F_ERR$SCRIPT_RUN: ERROR: More subtitles than videos."
+    exit 255
+fi
+
+echo -e "${F_SCR}Renaming subtitles in current folder... "
+rename_subtitles_in_current_folder
 
 
 
