@@ -21,7 +21,7 @@ SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files"
 SCRIPT_NAME="SubRenamer"
 
 VIDEO_FORMATS=( "mkv" "mp4" "avi" )
-DEPENDENCIES=( "ls" )
+DEPENDENCIES=( "find" "sort" "sed" "grep" "mapfile" )
 
 # Get the real script filename even through a symbolic link
 SCRIPT_RUN="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
