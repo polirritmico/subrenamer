@@ -141,7 +141,9 @@ shift $((OPTIND-1))
 #===============================================================================
 function get_files()
 {
+    echo -en "${F_SCR}Building the file list... "
     file_list=$(find -mindepth 1 -maxdepth 1)
+    echo -e "$F_OK"
 
 }  # ------------  end of function get_files  ------------
 
@@ -153,6 +155,7 @@ function get_files()
 #===============================================================================
 function get_video_files()
 {
+    echo -en "${F_SCR}Getting videos from the list... "
     local video_list_raw
 
     for (( i=0; i<${#VIDEO_FORMATS[@]}; i++ )); do
@@ -170,9 +173,11 @@ function get_video_files()
     done
 
     if [[ -z ${video_list[0]} ]]; then
-        echo "${F_ERR}${SCRIPT_RUN}: No video file found"
+        echo -e "\n${F_ERR}${SCRIPT_RUN}: No video file found."
         exit 255
     fi
+
+    echo -e "$F_OK"
 
 }  # ------------  end of function get_video_files  ------------
 
@@ -183,6 +188,7 @@ function get_video_files()
 #===============================================================================
 function get_srt_files()
 {
+    echo -en "${F_SCR}Getting subtitles from the list... "
     local sub_list_raw
 
     # Get srt files from file_list
@@ -196,11 +202,11 @@ function get_srt_files()
     mapfile -t sub_list <<< "$sub_list_raw"
 
     if [[ -z ${sub_list[0]} ]]; then
-        echo "${F_ERR}${SCRIPT_RUN}: No subtitle file found"
+        echo "\n${F_ERR}${SCRIPT_RUN}: No subtitle file found"
         exit 255
     fi
 
-
+    echo -e "$F_OK"
 
 }  # ------------  end of function get_srt_files  ------------
 
@@ -212,15 +218,29 @@ function get_srt_files()
 #===============================================================================
 function rename_subtitles_in_current_folder()
 {
-    local name=""
+    echo -e "${F_SCR}The following files will be renamed:"
 
+    local name=""
     for (( i=0; i<${#sub_list[@]}; i++ )); do
         name=${video_list[i]%.*}
         echo -e "            ${ITL}'${sub_list[i]}' to '${name}.srt'"
     done
 
+    echo -en "${F_WAR}Confirm the changes? $NS"
+    read -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${F_SCR}Quiting..." 
+        exit 0
+    fi
 
-    
+    echo -en "${F_SCR}Confirmed. Renaming the subtitles... "
+
+    for (( i=0; i<${#sub_list[@]}; i++ )); do
+        name=${video_list[i]%.*}
+        mv ${sub_list[i]} ${name}.srt
+    done
+    echo -e "$F_OK"
 
 }  # ----------  end of function rename_subtitles_in_current_folder  ----------
 
@@ -248,9 +268,10 @@ if [[ $subtitle_count -gt $video_count ]]; then
     exit 255
 fi
 
-echo -e "${F_SCR}Renaming subtitles in current folder... "
 rename_subtitles_in_current_folder
 
+#----------------------------------------
 
-
+echo -e "${F_SCR}Quiting..." 
+exit 0
 
