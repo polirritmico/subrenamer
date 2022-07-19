@@ -1,3 +1,175 @@
 #!/usr/bin/env bash
 
+#=== SH_SCRIPT  ================================================================
+#         NAME:   SubRenamer
+#  DESCRIPTION:   A script to change sub filenames accordingly to video files
+#         DATE:   2022/07/16
+#===============================================================================
+
+# e - script stops on error (any internal or external return !=0)
+# u - error if undefined variable
+# o pipefail - script fails if one of piped command fails
+# x - output each line (debug)
+set -euo pipefail
+
+
+#-----------------------------------------------------------------------
+#  Global settings
+#-----------------------------------------------------------------------
+SCRIPT_VERSION="0.1"
+SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files"
+SCRIPT_NAME="SubRenamer"
+
+VIDEO_FORMATS=( "mkv" "mp4" "avi" )
+DEPENDENCIES=( "ls" )
+
+# Get the real script filename even through a symbolic link
+SCRIPT_RUN="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+
+#----------------------------------------
+# Terminal output font styles and colors
+GREEN="\033[0;32m"
+ORANGE="\033[0;33m"
+NS="\033[0m" # No style
+BLD="\e[1m"  # Bold text style
+ITL="\e[3m"  # Italic text style
+
+F_OK="${GREEN}${BLD}OK${NS}"
+F_APP="${ORANGE}"
+F_ERR="\e[0;31m"
+F_CMD="\033[1;36m"
+F_ARG="\033[1;32m"
+F_OPT="\033[1;32m"
+F_SCR="\033[1;36m\e[1m${SCRIPT_RUN}:${NS} "
+F_WAR="\033[0;33m\e[3m"
+F_SEP="$GREEN==============================================================$NS"
+
+
+#-----------------------------------------------------------------------
+# Check dependencies
+#-----------------------------------------------------------------------
+missing_deps=0
+for dependency in "${DEPENDENCIES[@]}"; do
+    if ! command -v "$dependency" > /dev/null 2>&1 ; then
+        echo -e "$F_ERR$SCRIPT_RUN: Could't find '$dependency' on the system."\
+                "Check if is installed.$NS"
+        ((++missing_deps))
+    fi
+done
+if [[ $missing_deps -gt 0 ]]; then
+    exit 1
+fi
+
+
+
+#===  FUNCTION  ================================================================
+#         NAME:   Version
+#  DESCRIPTION:   Show script name, script version and short description.
+#===============================================================================
+function version()
+{
+    echo -e "$BLD$SCRIPT_NAME v$SCRIPT_VERSION$NS"
+    echo -e "$ITL$SHORT_DESCRIPTION$NS\n"
+}  # ------------  end of function version  ------------
+
+
+
+#===  FUNCTION  ================================================================
+#         NAME:   Help
+#  DESCRIPTION:   Show the script usage and documentation help.
+#===============================================================================
+function help()
+{
+    echo -e "Usage: $SCRIPT_RUN [OPTION]... [FILE]
+       $SCRIPT_RUN [OPTION]... [FILE] [OUTFILE]
+
+Options:
+  -o|option        Description.
+  -h|help          Display this help message.
+  -v|version       Display the version of $SCRIPT_NAME and exit."
+
+}  # ------------  end of function help  ------------
+
+
+
+#-------------------------------------------------------------------------------
+#  Global variables
+#-------------------------------------------------------------------------------
+
+files_list=()
+video_list=()
+sub_list=()
+
+
+#-------------------------------------------------------------------------------
+#  Handle command line arguments
+#-------------------------------------------------------------------------------
+while getopts ":hv" opt
+    do
+        case $opt in
+            h|help)
+                version
+                help
+                exit 0
+                ;;
+            v|version)
+                version
+                exit 0
+                ;;
+            :)
+                echo -e "$F_ERR$SCRIPT_NAME: Invalid option: '-$OPTARG'" \
+                        "requires an argument. Check '-help'.$NS"
+                exit 1
+                ;;
+            *)
+                echo -e "$F_ERR$SCRIPT_NAME: Invalid option: '-$OPTARG'." \
+                        "Check '-help'.$NS"
+                exit 1
+                ;;
+    esac
+done
+shift $((OPTIND-1))
+
+
+
+#===  FUNCTION  ================================================================
+#         NAME:   Get files
+#  DESCRIPTION:   Get a list of current files on dir and store it as a array.
+#===============================================================================
+function get_files()
+{
+    local video_formats=( "mkv" "mp4" "avi" )
+    video_list=$(ls *.mkv)
+
+    
+
+}  # ------------  end of function get_files  ------------
+
+
+
+#===  FUNCTION  ================================================================
+#         NAME:   Get video files
+#  DESCRIPTION:   
+#===============================================================================
+function get_video_files()
+{
+
+    
+
+}  # ------------  end of function get_video_files  ------------
+
+
+
+
+#===============================================================================
+# Beginning of script work
+#===============================================================================
+
+get_files
+get_video_files
+get_srt_files
+
+
+
+
 
