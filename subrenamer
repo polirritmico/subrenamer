@@ -146,7 +146,7 @@ function get_files()
 
 #===  FUNCTION  ================================================================
 #         NAME:   Get video files
-#  DESCRIPTION:   
+#  DESCRIPTION:   Get video files from files list, remove extra chars and sort.
 #===============================================================================
 function get_video_files()
 {
@@ -169,7 +169,7 @@ function get_video_files()
 
     if [[ -z ${video_list[0]} ]]; then
         echo -e "\n${F_ERR}${SCRIPT_RUN}: No video file found."
-        exit 255
+        exit 1
     fi
 
     echo -e "$F_OK"
@@ -198,7 +198,7 @@ function get_srt_files()
 
     if [[ -z ${sub_list[0]} ]]; then
         echo -e "\n${F_ERR}${SCRIPT_RUN}: No subtitle file found"
-        exit 255
+        exit 1
     fi
 
     echo -e "$F_OK"
@@ -260,7 +260,7 @@ subtitle_count=${#sub_list[@]}
 
 if [[ $subtitle_count -gt $video_count ]]; then
     echo "$F_ERR$SCRIPT_RUN: ERROR: More subtitles than videos."
-    exit 255
+    exit 1
 fi
 
 rename_subtitles_in_current_folder
