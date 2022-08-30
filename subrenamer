@@ -3,7 +3,7 @@
 #=== SH_SCRIPT  ================================================================
 #         NAME:   SubRenamer
 #  DESCRIPTION:   A script to change sub filenames accordingly to video files
-#         DATE:   2022/07/16
+#         DATE:   2022/08/30
 #===============================================================================
 
 # e - script stops on error (any internal or external return !=0)
@@ -16,7 +16,7 @@ set -euo pipefail
 #-----------------------------------------------------------------------
 #  Global settings
 #-----------------------------------------------------------------------
-SCRIPT_VERSION="0.1"
+SCRIPT_VERSION="0.3"
 SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files"
 SCRIPT_NAME="SubRenamer"
 
@@ -167,8 +167,8 @@ function get_video_files()
         fi
     done
 
-    if [[ -z ${video_list[0]} ]]; then
-        echo -e "\n${F_ERR}${SCRIPT_RUN}: No video file found."
+    if [[ ${#video_list[@]} -eq 0 ]]; then
+        echo -e "\n${F_ERR}${SCRIPT_RUN}: No video file found.${NS}"
         exit 1
     fi
 
@@ -197,7 +197,7 @@ function get_srt_files()
     mapfile -t sub_list <<< "$sub_list_raw"
 
     if [[ -z ${sub_list[0]} ]]; then
-        echo -e "\n${F_ERR}${SCRIPT_RUN}: No subtitle file found"
+        echo -e "\n${F_ERR}${SCRIPT_RUN}: No subtitle file found${NS}"
         exit 1
     fi
 
@@ -221,7 +221,7 @@ function rename_subtitles_in_current_folder()
         echo -e "            ${ITL}'${sub_list[i]}' to '${name}.srt'"
     done
 
-    echo -en "${F_WAR}Confirm the changes? $NS"
+    echo -en "${F_WAR}Confirm the changes? (y/n) $NS"
     read -n 1 -r
     echo ""
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -259,7 +259,7 @@ video_count=${#video_list[@]}
 subtitle_count=${#sub_list[@]}
 
 if [[ $subtitle_count -gt $video_count ]]; then
-    echo "$F_ERR$SCRIPT_RUN: ERROR: More subtitles than videos."
+    echo -e "${F_ERR}${SCRIPT_RUN}: ERROR: More subtitles than videos.${NS}"
     exit 1
 fi
 
