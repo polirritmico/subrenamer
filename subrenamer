@@ -16,7 +16,7 @@ set -euo pipefail
 #-----------------------------------------------------------------------
 #  Global settings
 #-----------------------------------------------------------------------
-SCRIPT_VERSION="0.3"
+SCRIPT_VERSION="0.4"
 SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files"
 SCRIPT_NAME="SubRenamer"
 
@@ -79,7 +79,7 @@ function help()
        $SCRIPT_RUN [OPTION]... [FILE] [OUTFILE]
 
 Options:
-  -o|option        Description.
+  -w|wait          Wait for user input on closing.
   -h|help          Display this help message.
   -v|version       Display the version of $SCRIPT_NAME and exit."
 
@@ -98,6 +98,8 @@ sub_list=()
 video_count=0
 subtitle_count=0
 
+wait_mode=false
+
 
 #-------------------------------------------------------------------------------
 #  Handle command line arguments
@@ -114,6 +116,9 @@ while getopts ":hv" opt
                 version
                 exit 0
                 ;;
+            w)
+                wait_mode=true
+                ;;
             :)
                 echo -e "$F_ERR$SCRIPT_NAME: Invalid option: '-$OPTARG'" \
                         "requires an argument. Check '-help'.$NS"
@@ -127,7 +132,6 @@ while getopts ":hv" opt
     esac
 done
 shift $((OPTIND-1))
-
 
 
 #===  FUNCTION  ================================================================
@@ -268,5 +272,9 @@ rename_subtitles_in_current_folder
 #----------------------------------------
 
 echo -e "${F_SCR}Quiting..." 
+if [[ ${wait_mode} == true ]]; then
+    read -n 1 -r
+    echo ""
+fi
 exit 0
 
