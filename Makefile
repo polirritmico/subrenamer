@@ -3,7 +3,7 @@ SHELL = /bin/bash
 SOURCE_SCRIPT_NAME = subrenamer
 
 #TARGET_FOLDER_INSTALLATION = /usr/local/bin
-TARGET_FOLDER_INSTALLATION = $(HOME)/.local/bin/
+TARGET_FOLDER_INSTALLATION = $(HOME)/.local/bin
 TARGET_SCRIPT_NAME = subrenamer
 
 # Style codes
