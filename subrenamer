@@ -272,11 +272,8 @@ rename_subtitles_in_current_folder
 #----------------------------------------
 
 echo -e "${F_SCR}Quiting..." 
-echo "HERE"
 if [[ ${wait_mode} == true ]]; then
-    echo "AQUÍ"
     read -n 1 -r
-    echo ""
 fi
 exit 0
 
