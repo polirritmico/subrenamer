@@ -109,7 +109,7 @@ MimeType=application/x-subrip;
 Actions=renamesub;
 Encoding=UTF-8
 
-[Desktop Action renanesub]
+[Desktop Action renamesub]
 Name=Rename subtitle
 Icon=video-x-generic
 Exec=konsole --workdir %d -e subrenamer -a -w
