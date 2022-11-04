@@ -1,5 +1,7 @@
 SubRenamer
 ==========
+![GitHub last commit](https://img.shields.io/github/last-commit/polirritmico/subrenamer)  [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 
 A simple script to change all srt filenames accordly to
 the video files in the same directory.
