@@ -42,7 +42,53 @@ files count must match):
 ```command
 $ subrenamer
 ```
-Press `y` when asked to confirm.
+Press `y` to confirm.
+
+### Example
+
+In this folder:
+
+```command
+$ tree
+.
+├── sub1.srt
+├── sub2.srt
+├── subtitle3.srt
+├── video1.mp4
+├── video2.mp4
+└── video3.mp4
+```
+
+Run `subrenamer`
+
+```command
+$ subrenamer
+SubRenamer v0.5
+===============
+subrenamer: Building the file list... OK
+subrenamer: Getting videos from the list... OK
+subrenamer: Getting subtitles from the list... OK
+subrenamer: The following files will be renamed:
+'sub1.srt' to 'video1.srt'
+'sub2.srt' to 'video2.srt'
+'subtitle3.srt' to 'video3.srt'
+Confirm the changes? (y/n) y
+subrenamer: Confirmed. Renaming the subtitles... OK
+subrenamer: Quiting...
+```
+
+And this is the result:
+
+```command
+$ tree
+.
+├── video1.mp4
+├── video1.srt
+├── video2.mp4
+├── video2.srt
+├── video3.mp4
+└── video3.srt
+```
 
 
 ------------------------------------------------------------
