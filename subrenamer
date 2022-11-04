@@ -17,7 +17,7 @@ set -euo pipefail
 #  Global settings
 #-----------------------------------------------------------------------
 SCRIPT_VERSION="0.5"
-SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files"
+SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files \nin the same directory"
 SCRIPT_NAME="SubRenamer"
 
 VIDEO_FORMATS=( "mkv" "mp4" "avi" )
@@ -75,8 +75,8 @@ function version()
 #===============================================================================
 function help()
 {
-    echo -e "Usage: $SCRIPT_RUN [OPTION]... [FILE]
-       $SCRIPT_RUN [OPTION]... [FILE] [OUTFILE]
+    echo -e "Usage: $SCRIPT_RUN
+       $SCRIPT_RUN [OPTIONS]
 
 Options:
   -a|auto          Automatic mode (no user input)

@@ -2,15 +2,15 @@ SubRenamer
 ==========
 
 A simple script to change all srt filenames accordly to
-the video files in the directory.
+the video files in the same directory.
 
 ```command
-foo@bar $ subrenamer -h
+$ subrenamer -h
 SubRenamer v0.5
-A script to change sub filenames accordingly to video files
+A script to change sub filenames accordingly to video files 
+in the same directory
 
-Usage: subrenamer [OPTION]... [FILE]
-subrenamer [OPTION]... [FILE] [OUTFILE]
+Usage: subrenamer [OPTION]
 
 Options:
 -a|auto          Automatic mode (no user input)
@@ -23,27 +23,36 @@ Options:
 
 ## Installation
 
+Just copy the script to any folder in your `$PATH`.
+
+Alternatively:
+
 ```command
 $ git clone https://github.com/polirritmico/subrenamer.git
 $ cd subrenamer
-subrenamer $ make install
+$ make install
 ```
+This will copy the script into `$HOME/.local/bin`
 
-## Run
+## Usage
 
 In the folder with the sub and video files (srt and video
-count must match):
+files count must match):
 
 ```command
 $ subrenamer
 ```
 Press `y` when asked to confirm.
 
+
 ------------------------------------------------------------
+
 
 ## Right click menu Dolphin (KDE) integration
 
-Create this file: `$XDG_DATA_HOME/kservices5/ServiceMenus/subrenamer.desktop` with this content:
+Create this file:
+
+`$XDG_DATA_HOME/kservices5/ServiceMenus/subrenamer.desktop`
 
 ```desktop
 [Desktop Entry]
@@ -60,6 +69,6 @@ Icon=video-x-generic
 Exec=konsole --workdir %d -e subrenamer -a -w
 ```
 
-Now go to `"Configure Dolphin" → "Context Menu"` and enable `Rename
+Now go to `Configure Dolphin` → `Context Menu` and enable `Rename
 subtitle`.
 
