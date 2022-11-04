@@ -16,7 +16,7 @@ set -euo pipefail
 #-----------------------------------------------------------------------
 #  Global settings
 #-----------------------------------------------------------------------
-SCRIPT_VERSION="0.4"
+SCRIPT_VERSION="0.5"
 SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files"
 SCRIPT_NAME="SubRenamer"
 
@@ -79,6 +79,7 @@ function help()
        $SCRIPT_RUN [OPTION]... [FILE] [OUTFILE]
 
 Options:
+  -a|auto          Automatic mode (no user input)
   -w|wait          Wait for user input on closing.
   -h|help          Display this help message.
   -v|version       Display the version of $SCRIPT_NAME and exit."
@@ -99,12 +100,13 @@ video_count=0
 subtitle_count=0
 
 wait_mode=false
+auto_mode=false
 
 
 #-------------------------------------------------------------------------------
 #  Handle command line arguments
 #-------------------------------------------------------------------------------
-while getopts ":hvw" opt
+while getopts ":hvaw" opt
     do
         case $opt in
             h|help)
@@ -115,6 +117,9 @@ while getopts ":hvw" opt
             v|version)
                 version
                 exit 0
+                ;;
+            a)
+                auto_mode=true
                 ;;
             w)
                 wait_mode=true
@@ -225,15 +230,18 @@ function rename_subtitles_in_current_folder()
         echo -e "            ${ITL}'${sub_list[i]}' to '${name}.srt'"
     done
 
-    echo -en "${F_WAR}Confirm the changes? (y/n) $NS"
-    read -n 1 -r
-    echo ""
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${F_SCR}Quiting..." 
-        exit 0
+    if [[ $auto_mode == "false" ]]; then
+        echo -en "${F_WAR}Confirm the changes? (y/n) $NS"
+        read -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "${F_SCR}Quiting..."
+            exit 0
+        fi
+        echo -en "${F_SCR}Confirmed. Renaming the subtitles... "
+    else
+        echo -e "${F_SCR}Auto mode enabled..."
     fi
-
-    echo -en "${F_SCR}Confirmed. Renaming the subtitles... "
 
     for (( i=0; i<${#sub_list[@]}; i++ )); do
         name=${video_list[i]%.*}
