@@ -16,7 +16,7 @@ set -euo pipefail
 #-----------------------------------------------------------------------
 #  Global settings
 #-----------------------------------------------------------------------
-SCRIPT_VERSION="0.5"
+SCRIPT_VERSION="0.6"
 SHORT_DESCRIPTION="A script to change sub filenames accordingly to video files \nin the same directory"
 SCRIPT_NAME="SubRenamer"
 
@@ -80,6 +80,7 @@ function help()
 
 Options:
   -a|auto          Automatic mode (no user input)
+  -f|format        Change to ISO-8859-15 and CRLF.
   -w|wait          Wait for user input on closing.
   -h|help          Display this help message.
   -v|version       Display the version of $SCRIPT_NAME and exit."
@@ -101,12 +102,13 @@ subtitle_count=0
 
 wait_mode=false
 auto_mode=false
+format_mode=false
 
 
 #-------------------------------------------------------------------------------
 #  Handle command line arguments
 #-------------------------------------------------------------------------------
-while getopts ":hvaw" opt
+while getopts ":hvafw" opt
     do
         case $opt in
             h|help)
@@ -120,6 +122,9 @@ while getopts ":hvaw" opt
                 ;;
             a)
                 auto_mode=true
+                ;;
+            f)
+                format_mode=true
                 ;;
             w)
                 wait_mode=true
@@ -251,7 +256,36 @@ function rename_subtitles_in_current_folder()
 
 }  # ----------  end of function rename_subtitles_in_current_folder  ----------
 
+#===  FUNCTION  ================================================================
+#         NAME:   Fix enconding to all subs in folder
+#  DESCRIPTION:   Change codification to ISO-8859-15 and CRLF endline.
+#===============================================================================
+function fix_enconding_to_all_subs_in_folder()
+{
+    echo -e "${F_SCR}Change the end line codification...$NS"
 
+    local name=""
+    for (( i=0; i<${#sub_list[@]}; i++ )); do
+        name=${video_list[i]%.*}
+        echo -e "            ${ITL}'${sub_list[i]}' to '${name}.srt'"
+    done
+
+    for (( i=0; i<${#video_list[@]}; i++ )); do
+        name=${video_list[i]%.*}
+        filename="${name}.srt"
+        todos "${filename}"
+
+        # Get file coding
+        # encoding=$(file -i "${filename}" | sed "s/.*charset=\(.*\)$/\1/")
+        # if [ "${encoding}" != "iso-8859-1" ]; then
+        #     echo -e "${F_SCR}Change encoding to iso-8859-1...$NS"
+        #     recode "${encoding}"..iso-8859-1 "${filename}"
+        # fi
+
+    done
+    echo -e "$F_OK"
+
+}  # ------------  end of function fix_enconding_to_all_subs_in_folder  ------------
 
 
 #===============================================================================
@@ -277,9 +311,13 @@ fi
 
 rename_subtitles_in_current_folder
 
+if [[ $format_mode == "true" ]]; then
+    fix_enconding_to_all_subs_in_folder
+fi
+
 #----------------------------------------
 
-echo -e "${F_SCR}Quiting..." 
+echo -e "${F_SCR}Quiting..."
 if [[ ${wait_mode} == true ]]; then
     read -n 1 -r
 fi
